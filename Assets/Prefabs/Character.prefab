@@ -36,8 +36,8 @@ GameObject:
   m_Component:
   - 4: {fileID: 4000012221515404}
   - 50: {fileID: 50000010367015918}
-  - 114: {fileID: 114000012844933640}
   - 95: {fileID: 95000012539150326}
+  - 114: {fileID: 114000010559768218}
   m_Layer: 8
   m_Name: Character
   m_TagString: Untagged
@@ -109,7 +109,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000012559593274}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2.65, y: 1.44, z: 0}
+  m_LocalPosition: {x: -9.379923, y: 8.855678, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
@@ -139,7 +139,7 @@ Rigidbody2D:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000012559593274}
   m_UseAutoMass: 0
-  m_Mass: 60
+  m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 1
@@ -179,7 +179,7 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
---- !u!114 &114000012844933640
+--- !u!114 &114000010559768218
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -187,16 +187,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 1000012559593274}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3559f15388ef9444a80416853268fbaa, type: 3}
+  m_Script: {fileID: 11500000, guid: 4b3ba6297c52a1747865394552cff2c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speedFactor: 7
+  groundDetector: {fileID: 4000011839877492}
+  coll: {fileID: 61000013843091652}
+  rend: {fileID: 212000012909477380}
+  whatIsGround:
+    serializedVersion: 2
+    m_Bits: 256
+  speedFactor: 10
   jumpSpeed: 25
-  shotDelay: 0.5
-  recoverDelay: 0.6
   groundDetectionRadius: 0.3
-  maxHorizontalJumpSpeed: 34.91
-  numPlayer: 0
+  maxHorizontalJumpSpeed: 0.1
+  horizontalAxis: 0
+  fire: 0
+  jump: 0
 --- !u!212 &212000012909477380
 SpriteRenderer:
   m_ObjectHideFlags: 1
