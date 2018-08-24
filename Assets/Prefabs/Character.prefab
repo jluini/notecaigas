@@ -109,7 +109,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000012559593274}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -9.379923, y: 8.855678, z: 0}
+  m_LocalPosition: {x: -8.744575, y: 4.8796616, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
@@ -125,7 +125,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000010479427404}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0.48, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
@@ -159,9 +159,9 @@ BoxCollider2D:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_UsedByEffector: 0
-  m_Offset: {x: 0, y: 0.75}
+  m_Offset: {x: 0, y: 0.5}
   serializedVersion: 2
-  m_Size: {x: 0.67, y: 1.5}
+  m_Size: {x: 0.67, y: 1}
 --- !u!95 &95000012539150326
 Animator:
   serializedVersion: 3
@@ -196,6 +196,8 @@ MonoBehaviour:
   whatIsGround:
     serializedVersion: 2
     m_Bits: 256
+  shotDelay: 2
+  projectileSpeed: 10
   speedFactor: 10
   jumpSpeed: 25
   groundDetectionRadius: 0.3
@@ -203,6 +205,8 @@ MonoBehaviour:
   horizontalAxis: 0
   fire: 0
   jump: 0
+  suicide: 0
+  game: {fileID: 0}
 --- !u!212 &212000012909477380
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -232,7 +236,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: f6c5ac076b63672449c4ba58dff1b6a6, type: 3}
+  m_Sprite: {fileID: 21300000, guid: a5d88926c9918e2468d8355fb50e0c7a, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
