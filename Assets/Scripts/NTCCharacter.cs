@@ -53,6 +53,9 @@ namespace NoTeCaigas
             Assert.IsNotNull(rb);
             anim = GetComponent<Animator>();
             Assert.IsNotNull(anim);
+
+            lastShotTimestamp = JuloTime.gameTime() - shotDelay;
+
             StartCoroutine("Live");
         }
 
@@ -60,69 +63,60 @@ namespace NoTeCaigas
 
         IEnumerator Live()
         {
-            lastShotTimestamp = JuloTime.gameTime();
-
             yield return null; // wait a frame
-
+            
             while(true)
             {
-                bool isJumping = false;
-                //bool isOnAir = false;
-
                 // is ready
-
-                //while(newAttack == null)
-                //{
-                while(true)
+                while(true) //while(newAttack == null)
                 {
                     FixPosition();
 
-                    Random rnd = new Random();
-                    int sgn = rnd.Next(2) * 2 - 1;
-
                     if(suicide)
+                    {
+                        Random rnd = new Random();
+                        int sgn = rnd.Next(2) * 2 - 1;
+                        
                         newAttack = new NTCAttack(new Vector3(+200f * sgn, +100f, 0f));
+                    }
 
                     if(newAttack != null)
                         break;
-                        
-                    
-                    bool walking = false;
-
-                    if(horizontalAxis > 0) {
-                        horizontalDir = true;
-                        rend.flipX = false;
-                        walking = true;
-                    } else if(horizontalAxis < 0) {
-                        horizontalDir = false;
-                        rend.flipX = true;
-                        walking = true;
-                    }
-
-                    float horizontalSpeed = horizontalAxis * speedFactor;
-
-                    Vector2 vel = rb.velocity;
-                    vel.x = horizontalSpeed;
 
                     bool grounded = IsGrounded();
+                    bool walking = false;
 
-                    if(isJumping && grounded)
-                    {
-                        //isOnAir = false;
-                        anim.SetTrigger("ground");
-                        isJumping = false;
-                    }
+                    Vector2 vel = rb.velocity;
+
+                    //if(grounded)
+                    //{
+                        if(horizontalAxis > 0)
+                        {
+                            horizontalDir = true;
+                            rend.flipX = false;
+                            walking = true;
+                        } else if(horizontalAxis < 0)
+                        {
+                            horizontalDir = false;
+                            rend.flipX = true;
+                            walking = true;
+                        }
+                        
+                        float horizontalSpeed = horizontalAxis * speedFactor;
+                        vel.x = horizontalSpeed;
+
+                    //}
 
                     if(grounded && jump)
                     {
                         vel.y = jumpSpeed;
                         float absx = Mathf.Abs(vel.x);
+                        // TODO for what is this?
                         if(absx > maxHorizontalJumpSpeed)
                         {
                             vel.x = maxHorizontalJumpSpeed * Mathf.Sign(vel.x);
                         }
                         anim.SetTrigger("jump");
-                        isJumping = true;
                     }
 
                     if(fire)
@@ -139,18 +133,18 @@ namespace NoTeCaigas
                                 anim.SetTrigger("fire");
                                 game.NewProjectile(0, transform.position, Quaternion.identity, projectileVel);
                                 lastShotTimestamp = now;
-                                isJumping = false;
                             }
                         }
                     }
 
                     rb.velocity = vel;
-                    anim.SetBool("walking", walking);
+
+                    anim.SetBool("grounded", grounded);
+                    anim.SetBool("walking", grounded && walking);
 
                     yield return null;
                 }
 
-                //Debug.Log("Me están atacando");
                 // is under attack
                 anim.SetTrigger("hit");
                 rb.AddForce(newAttack.GetForce(), ForceMode2D.Force);
@@ -158,6 +152,7 @@ namespace NoTeCaigas
 
                 yield return new WaitForSeconds(2f);
                 anim.SetTrigger("back");
+
                 //yield return null;
             }
         }
