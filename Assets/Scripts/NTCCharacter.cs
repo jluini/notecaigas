@@ -2,7 +2,11 @@
 
 using UnityEngine;
 using UnityEngine.Assertions;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
+using String = System.String;
 using Random = System.Random;
 using System.Collections;
 
@@ -10,24 +14,38 @@ namespace NoTeCaigas
 {
     public class NTCCharacter : MonoBehaviour
     {
+        public int playerNumber = 0;
+
+        [Header("Animatable")]
+        public bool pushing = false;
+        bool pushTaken = false;
+
         [Header("Hooks")]
+        public LayerMask whatIsGround;
+
         public Transform groundDetector;
+        public float groundDetectionRadius = 0.3f;
+        public Transform pushDetector;
+        public float pushDetectionRadius = 0.3f;
+
         public Collider2D coll;
         public SpriteRenderer rend;
 
         [Header("Attributes")]
-        public LayerMask whatIsGround;
-
         public float shotDelay = 2f;
-        public float projectileSpeed = 10f;
+
+        public float pushForce = 10f;
+
+        public float recoverDelay = 1f;
+
+
         public float speedFactor = 10f;
         public float jumpSpeed   = 1f;
-
-        public float groundDetectionRadius = 0.3f;
         public float maxHorizontalJumpSpeed = 0.1f;
 
         [HideInInspector]
         public float horizontalAxis = 0f;
+        [HideInInspector]
         bool horizontalDir = true;
 
         [HideInInspector]
@@ -88,24 +106,33 @@ namespace NoTeCaigas
 
                     Vector2 vel = rb.velocity;
 
-                    //if(grounded)
-                    //{
-                        if(horizontalAxis > 0)
+                    if(horizontalAxis > 0)
+                    {
+                        walking = true;
+                        if(!horizontalDir)
                         {
                             horizontalDir = true;
                             rend.flipX = false;
-                            walking = true;
-                        } else if(horizontalAxis < 0)
+                            Vector3 ppos = pushDetector.transform.localPosition;
+                            ppos.x = -ppos.x;
+                            pushDetector.transform.localPosition = ppos;
+                        }
+                    } else if(horizontalAxis < 0)
+                    {
+                        walking = true;
+                        if(horizontalDir)
                         {
                             horizontalDir = false;
                             rend.flipX = true;
-                            walking = true;
+                            Vector3 ppos = pushDetector.transform.localPosition;
+                            ppos.x = -ppos.x;
+                            pushDetector.transform.localPosition = ppos;
                         }
-                        
-                        float horizontalSpeed = horizontalAxis * speedFactor;
-                        vel.x = horizontalSpeed;
+                    }
+                    
+                    float horizontalSpeed = horizontalAxis * speedFactor;
+                    vel.x = horizontalSpeed;
 
-                    //}
 
                     if(grounded && jump)
                     {
@@ -128,10 +155,13 @@ namespace NoTeCaigas
                             if(CanShot())
                             {
                                 // shot
-                                Vector3 projectileVel = rb.velocity;
-                                projectileVel.x += projectileSpeed * (horizontalDir ? +1f : -1f);
+                                //Vector3 projectileVel = rb.velocity;
+                                //projectileVel.x += projectileSpeed * (horizontalDir ? +1f : -1f);
+                                //game.NewProjectile(0, transform.position, Quaternion.identity, projectileVel);
+
+
                                 anim.SetTrigger("fire");
-                                game.NewProjectile(0, transform.position, Quaternion.identity, projectileVel);
+                                pushTaken = false;
                                 lastShotTimestamp = now;
                             }
                         }
@@ -145,15 +175,48 @@ namespace NoTeCaigas
                     yield return null;
                 }
 
+                // restore pushing, maybe I were pushing while being attacked
+                pushing = false;
+
                 // is under attack
                 anim.SetTrigger("hit");
                 rb.AddForce(newAttack.GetForce(), ForceMode2D.Force);
                 newAttack = null;
 
-                yield return new WaitForSeconds(2f);
+                yield return new WaitForSeconds(recoverDelay);
                 anim.SetTrigger("back");
 
                 //yield return null;
+            }
+        }
+
+        void LateUpdate()
+        {
+            if(pushing && !pushTaken)
+            {
+                for(int i = 1; i <= game.numPlayers; i++)
+                {
+                    if(i != playerNumber)
+                    {
+                        //Debug.Log("Checking " + Time.frameCount);
+
+                        Vector3 pushPos = pushDetector.position;
+                        NTCCharacter otherCharacter = game.GetPlayer(i).currentCharacter;
+                        Vector3 otherPos = otherCharacter.transform.position;
+
+                        float dist = Vector3.Distance(pushPos, otherPos);
+
+                        if(dist <= pushDetectionRadius)
+                        {
+                            //Debug.Log("Hitting");
+
+                            otherCharacter.newAttack = new NTCAttack(new Vector3(pushForce * (horizontalDir ? 1f : -1f), 0f, 0f));
+
+                            //pushing = false;
+                            pushTaken = true;
+                        }
+                    }
+                }
             }
         }
 
@@ -189,137 +252,36 @@ namespace NoTeCaigas
             return false;
         }
 
-        /*
-        public float speedFactor = 1f;
-        public float jumpSpeed   = 1f;
-        
-        public float shotDelay = 2f;
-        public float recoverDelay = 1f;
-        
-        public float groundDetectionRadius = 0.3f;
-        public float maxHorizontalJumpSpeed = 0.1f;
-        
-        bool recover;
-        float lastHitTimestamp;
-        
-        [HideInInspector]
-        public int numPlayer;
-        
-        NoTeCaigasGame game;
-        InputManager inputManager;
-        
-        Animator anim;
-        SpriteRenderer rend;
-        
-        bool charged; // make private
-        float lastShotTimestamp;
-        
-        Transform groundDetector;
-        
-        bool grounded = false;
-        bool walking = false;
-        
-        public override void onStart() {
-            game = JuloFind.singleton<NoTeCaigasGame>();
-            inputManager = JuloFind.singleton<InputManager>();
-            anim = GetComponent<Animator>();
-            rend = JuloFind.oneDescendant<SpriteRenderer>(this);
-            
-            groundDetector = JuloFind.byName<Transform>("GroundDetector", this);
-            
-            charged = true;
-            lastShotTimestamp = JuloTime.gameTime();
-            
-            recover = false;
-            lastHitTimestamp = JuloTime.gameTime();
-        }
-        
-        public override void onUpdate() {
-            grounded = isGrounded();
-            anim.SetBool("grounded", grounded);
-            
-            bool fireAxis = inputManager.isDown("Fire", numPlayer);
-            if(fireAxis) {
-                tryToFire();
+        #if UNITY_EDITOR
+
+        void OnDrawGizmos()
+        {
+            if(groundDetector)
+            {
+                DrawGizmoCircle(Color.green, groundDetector.position, groundDetectionRadius);
             }
-            walking = false;
-            //if(grounded && isReady()) {
-            if(isReady()) {
-                float horizontalAxis = inputManager.getAxis("Horizontal", numPlayer);
-                if(horizontalAxis > 0) {
-                    rend.flipX = false;
-                    walking = true;
-                } else if(horizontalAxis < 0) {
-                    rend.flipX = true;
-                    walking = true;
-                }
-                
-                float horizontalSpeed = horizontalAxis * speedFactor;
-                
-                Vector2 vel = rb.velocity;
-                vel.x = horizontalSpeed;
-                
-                bool jumpAxis = inputManager.isDown("Jump", numPlayer);
-                if(jumpAxis) {
-                    if(grounded) {
-                        vel.y = jumpSpeed;
-                        float absx = Mathf.Abs(vel.x);
-                        if(absx > maxHorizontalJumpSpeed) {
-                            vel.x = maxHorizontalJumpSpeed * Mathf.Sign(vel.x);
-                        }
-                        anim.SetTrigger("jump");
+
+            if(pushDetector)
+            {
+                DrawGizmoCircle(Color.red, pushDetector.position, pushDetectionRadius);
+                if(pushing)
+                {
+                    for(float rad = 0.9f; rad > 0f; rad -= 0.1f)
+                    {
+                        DrawGizmoCircle(Color.yellow, pushDetector.position, pushDetectionRadius * rad);
                     }
                 }
-                
-                rb.velocity = vel;
-            }
-            anim.SetBool("grounded", grounded);
-            anim.SetBool("walking", walking);
-        }
-        
-        public override void onHit() {
-            recover = true;
-            lastHitTimestamp = JuloTime.gameTime();
-        }
-        
-        bool isReady() {
-            if(recover && JuloTime.gameTimeSince(lastHitTimestamp) > recoverDelay) {
-                recover = false;
-            }
-            return !recover;
-        }
-        
-        bool isGrounded() {
-            Vector2 pos = groundDetector.position;
-            Collider2D[] grounds = Physics2D.OverlapCircleAll(pos, groundDetectionRadius, game.whatIsGround);
-            
-            foreach(Collider2D c in grounds) {
-                if(c.gameObject != coll.gameObject) {
-                    return true;
-                }
-            }
-            return false;
-        }
-        
-        bool isCharged() {
-            if(!charged && JuloTime.gameTimeSince(lastShotTimestamp) > shotDelay) {
-                charged = true;
-            }
-            return charged;
-        }
-        
-        void tryToFire() {
-            if(isCharged() && isReady()) {
-                fire();
             }
         }
-        void fire() {
-            game.fire(transform.position);
-            // ...
-            charged = false;
-            lastShotTimestamp = JuloTime.gameTime();
-            anim.SetTrigger("fire");
+
+        void DrawGizmoCircle(Color color, Vector3 position, float radius)
+        {
+            //Gizmos.color = color;
+            //Gizmos.DrawSphere(position, radius);
+            UnityEditor.Handles.color = color;
+            UnityEditor.Handles.DrawWireDisc(position , Vector3.back, radius);
         }
-        */
+
+        #endif
     }
 }

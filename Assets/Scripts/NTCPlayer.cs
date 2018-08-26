@@ -63,9 +63,11 @@ namespace NoTeCaigas {
         {
             GameObject newCharObj = Instantiate(characterPrefab.gameObject);
             NTCCharacter newCharacter = newCharObj.GetComponent<NTCCharacter>();
-            newCharacter.game = this.game;
-            newCharacter.transform.SetParent(this.transform);
 
+            newCharacter.playerNumber = playerNumber;
+            newCharacter.game = this.game;
+
+            newCharacter.transform.SetParent(this.transform);
             newCharacter.transform.position = new Vector3((playerNumber - 2) * 3f, 5f, 0f);
 
             return newCharacter;

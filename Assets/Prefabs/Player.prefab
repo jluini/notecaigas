@@ -54,5 +54,6 @@ MonoBehaviour:
   playerNumber: 0
   playerName: player
   numLives: 5
-  characterPrefab: {fileID: 114000010559768218, guid: e9c1ccc7ee236d449ba69e82854f8ee5,
+  characterPrefab: {fileID: 114000010472252958, guid: e9c1ccc7ee236d449ba69e82854f8ee5,
     type: 2}
+  currentCharacter: {fileID: 0}

@@ -12,12 +12,14 @@ namespace NoTeCaigas {
         public NTCProjectile[] projectiles;
 
         NTCPlayer[] players;
-        uint numPlayers = 2;
+
+        [HideInInspector]
+        public int numPlayers = 0;
 
         public void Init(NTCPlayer[] players)
         {
             this.players = players;
-            this.numPlayers = (uint)players.Length;
+            this.numPlayers = players.Length;
         }
 
 
@@ -43,6 +45,11 @@ namespace NoTeCaigas {
 
                 players[0].currentCharacter.newAttack = new NTCAttack(new Vector3(+200f, +100f, 0f));
             }
+        }
+
+        public NTCPlayer GetPlayer(int numPlayer)
+        {
+            return players[numPlayer - 1];
         }
 
         public void NewProjectile(int projectileType, Vector3 position, Quaternion rotation, Vector3 velocity)
