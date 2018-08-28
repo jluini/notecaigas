@@ -20,7 +20,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 4000014195218306}
   - 61: {fileID: 61000013271498026}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: Collider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -38,7 +38,7 @@ GameObject:
   - 50: {fileID: 50000013215723872}
   - 95: {fileID: 95000011532093664}
   - 114: {fileID: 114000010472252958}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: Character
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -53,7 +53,7 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 4000011787714530}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: PushDetector
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -69,7 +69,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 4000014066936252}
   - 212: {fileID: 212000011445920064}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: Renderer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -98,7 +98,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000012099661808}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -4.6497726, y: 0.24511811, z: 0}
+  m_LocalPosition: {x: -11.663534, y: 4.4588943, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
@@ -115,7 +115,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000012665548694}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.21, y: 0.07, z: 0}
+  m_LocalPosition: {x: 0.42, y: 0.07, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
@@ -227,13 +227,14 @@ MonoBehaviour:
   groundDetector: {fileID: 4000013832851356}
   groundDetectionRadius: 0.28
   pushDetector: {fileID: 4000011787714530}
-  pushDetectionRadius: 0.3
+  pushDetectionRadius: 0.7
   coll: {fileID: 61000013271498026}
   rend: {fileID: 212000011445920064}
   shotDelay: 2
   pushForce: 500
-  speedFactor: 10
-  jumpSpeed: 25
+  recoverDelay: 1
+  speedFactor: 6
+  jumpSpeed: 18
   maxHorizontalJumpSpeed: 0.1
   horizontalAxis: 0
   fire: 0

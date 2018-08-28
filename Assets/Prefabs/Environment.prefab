@@ -21,7 +21,7 @@ GameObject:
   - 4: {fileID: 4000012484393310}
   - 114: {fileID: 114000010080650828}
   m_Layer: 0
-  m_Name: Naufragio (3)
+  m_Name: RiskyLevel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -123,7 +123,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000011026265580}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 6.401869, y: 8.508833, z: 0}
+  m_LocalPosition: {x: 0.22114563, y: 14.431118, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
@@ -170,10 +170,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b30589d8a7606649a84f9cb0c82548e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  levelName: Naufragio 3
+  levelName: Nivel riesgoso
   scene:
-    sceneAsset: {fileID: 102900000, guid: af72dd794e38be947b55d53a8dd78339, type: 3}
-    sceneName: Scenes/naufragio
+    sceneAsset: {fileID: 102900000, guid: 9e27d95f61de67a478a47a0d0955805d, type: 3}
+    sceneName: Scenes/Risky/risky
 --- !u!114 &114000010404498866
 MonoBehaviour:
   m_ObjectHideFlags: 1
